@@ -1,0 +1,5 @@
+
+{# remove password when sudoing as remote_user #}
+{# allow to sudo commands as postgres user for db management #}
+{{ ansible_remote_user }} ALL = (postgres) NOPASSWD: ALL
+{{ ansible_remote_user }} ALL=(ALL:ALL) NOPASSWD:ALL
