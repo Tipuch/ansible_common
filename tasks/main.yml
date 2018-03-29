@@ -34,15 +34,27 @@
     - name: COMMON | Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: 'PasswordAuthentication'
         line: 'PasswordAuthentication no'
       notify: restart ssh
       tags: security
     - name: COMMON | Disable root login
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: 'PermitRootLogin'
         line: 'PermitRootLogin no'
+      notify: restart ssh
+      tags: security
+    - name: COMMON | Disable password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: 'PasswordAuthentication yes'
+        state: absent
+      notify: restart ssh
+      tags: security
+    - name: COMMON | Disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: 'PermitRootLogin yes'
+        state: absent
       notify: restart ssh
       tags: security
 - name: COMMON | Setup UFW
