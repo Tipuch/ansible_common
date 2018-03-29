@@ -62,7 +62,7 @@
       tags: security
 - name: COMMON | Install Unattended Upgrades
   apt:
-    state: installed
+    state: present
     pkg: unattended-upgrades
   tags: packages
 - name: COMMON | Set up unattended upgrades
