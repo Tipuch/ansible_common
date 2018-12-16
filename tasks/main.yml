@@ -1,8 +1,8 @@
 ---
-- name: COMMON | Install basic packages
+- name: Install basic packages
   package:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - wget
     - vim
@@ -18,71 +18,71 @@
     - ufw
     - "{{ base_python_package }}-pip"
   tags: packages
-- name: COMMON | Upgrade pip
+- name: Upgrade pip
   pip:
     name: pip
     version: 9.0.1
   tags: packages
-- name: COMMON | Setup fail2ban
+- name: Setup fail2ban
   service:
     name: fail2ban
     state: started
     enabled: yes
   tags: security
-- name: COMMON | Setup SSH service
+- name: Setup SSH service
   block:
-    - name: COMMON | Disable password authentication
+    - name: Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
         line: 'PasswordAuthentication no'
       notify: restart ssh
       tags: security
-    - name: COMMON | Disable root login
+    - name: Disable root login
       lineinfile:
         path: /etc/ssh/sshd_config
         line: 'PermitRootLogin no'
       notify: restart ssh
       tags: security
-    - name: COMMON | Disable password authentication
+    - name: Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: 'PasswordAuthentication yes'
         state: absent
       notify: restart ssh
       tags: security
-    - name: COMMON | Disable root login
+    - name: Disable root login
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: 'PermitRootLogin yes'
         state: absent
       notify: restart ssh
       tags: security
-- name: COMMON | Setup UFW
+- name: Setup UFW
   block:
     # Allow only ssh and http(s) ports
-    - name: COMMON | Allow ssh and http(s) connections
+    - name: Allow ssh and http(s) connections
       ufw:
         rule: allow
         port: "{{ item }}"
       with_items:
         - "{{ ufw_allowed_ports }}"
       tags: security
-    - name: COMMON | Enable ufw/firewall
+    - name: Enable ufw/firewall
       ufw:
         state: enabled
         policy: deny
       tags: security
-- name: COMMON | Install Unattended Upgrades
+- name: Install Unattended Upgrades
   apt:
     state: present
     pkg: unattended-upgrades
   tags: packages
-- name: COMMON | Set up unattended upgrades
+- name: Set up unattended upgrades
   copy:
     src: apt_periodic
     dest: /etc/apt/apt.conf.d/10periodic
   tags: security
-- name: COMMON | Automatically remove unused dependencies
+- name: Automatically remove unused dependencies
   lineinfile:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: "Unattended-Upgrade::Remove-Unused-Dependencies"
@@ -90,7 +90,7 @@
     state: present
     create: yes
   tags: security
-- name: COMMON | Setup sudoers file
+- name: Setup sudoers file
   template:
     src: sudoers.j2
     dest: /etc/sudoers.d/sudoers
