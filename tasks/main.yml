@@ -59,8 +59,8 @@
       tags: security
 - name: Setup UFW
   block:
-    # Allow only ssh and http(s) ports
-    - name: Allow ssh and http(s) connections
+    # Allow by default only ssh and http(s) ports
+    - name: Allow ports
       ufw:
         rule: allow
         port: "{{ item }}"
@@ -71,6 +71,7 @@
       ufw:
         state: enabled
         policy: deny
+        direction: incoming
       tags: security
 - name: Install Unattended Upgrades
   apt:
