@@ -1,9 +1,9 @@
 ---
 # security
 ufw_allowed_ports:
-  - 22
-  - 80
-  - 443
+  - '22'
+  - '80'
+  - '443'
 
 base_python_package: "{{ ansible_python_interpreter | default('/usr/bin/python') | basename }}"
 ansible_remote_user: ubuntu
