@@ -29,26 +29,26 @@
     - name: Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
-        line: 'PasswordAuthentication no'
+        line: "PasswordAuthentication no"
       notify: restart ssh
       tags: security
     - name: Disable root login
       lineinfile:
         path: /etc/ssh/sshd_config
-        line: 'PermitRootLogin no'
+        line: "PermitRootLogin no"
       notify: restart ssh
       tags: security
     - name: Disable password authentication
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: 'PasswordAuthentication yes'
+        regexp: "PasswordAuthentication yes"
         state: absent
       notify: restart ssh
       tags: security
     - name: Disable root login
       lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: 'PermitRootLogin yes'
+        regexp: "PermitRootLogin yes"
         state: absent
       notify: restart ssh
       tags: security
@@ -86,14 +86,20 @@
   lineinfile:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: "Unattended-Upgrade::Remove-Unused-Dependencies"
-    line: "Unattended-Upgrade::Remove-Unused-Dependencies \"true\";"
+    line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'
     state: present
     create: yes
+  tags: security
+- name: Create sudoers config folder
+  file:
+    path: /etc/sudoers.d
+    state: directory
+    mode: 0440
   tags: security
 - name: Setup sudoers file
   template:
     src: sudoers.j2
     dest: /etc/sudoers.d/sudoers
-    validate: 'visudo -cf %s'
+    validate: "visudo -cf %s"
     mode: 0440
   tags: security
