@@ -7,3 +7,5 @@ ufw_allowed_ports:
 
 base_python_package: "{{ ansible_python_interpreter | default('/usr/bin/python3') | basename }}"
 ansible_remote_user: ubuntu
+distribution: ubuntu
+version: jammy

@@ -1,24 +1,56 @@
 ---
 - name: Install basic packages
   ansible.builtin.apt:
-    name: "{{ item }}"
+    pkg:
+      - apt-utils
+      - wget
+      - vim
+      - nano
+      - acl
+      - curl
+      - fail2ban
+      - git
+      - htop
+      - build-essential
+      - gnupg
+      - apt-transport-https
+      - ufw
+      - kmod
+    update_cache: yes
     state: present
-  with_items:
-    - wget
-    - vim
-    - nano
-    - acl
-    - openssh-server
-    - curl
-    - python-apt
-    - fail2ban
-    - git
-    - htop
-    - build-essential
-    - ufw
-    - "{{ base_python_package }}-pip"
-    - kmod
   tags: packages
+- name: Setup CrowdSec
+  block: 
+    - name: Add Crowdsec GPG key
+      ansible.builtin.apt_key:
+        url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+        keyring: /etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg
+        state: present
+      tags: security
+
+    - name: Add Crowdsec repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg] https://packagecloud.io/crowdsec/crowdsec/{{ distribution }} {{ version }} main"
+        state: present
+        filename: 'crowdsec_crowdsec'
+      tags: security
+
+    - name: Add Crowdsec source repository
+      ansible.builtin.apt_repository:
+        repo: "deb-src [signed-by=/etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg] https://packagecloud.io/crowdsec/crowdsec/{{ distribution }} {{ version }} main"
+        state: present
+        filename: 'crowdsec_crowdsec'
+      tags: security
+
+    - name: install Crowdsec and firewall bouncers
+      ansible.builtin.apt:
+        pkg:
+          - crowdsec
+          - crowdsec-firewall-bouncer-iptables
+        state: latest
+        update_cache: yes
+      tags: security
+
 - name: Setup fail2ban
   ansible.builtin.service:
     name: fail2ban
